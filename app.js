@@ -1,5 +1,5 @@
 //jshint esversion:6
-
+require('dotenv').config()
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
@@ -19,7 +19,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost:27017/blogDB",{useNewUrlParser:true});
+mongoose.connect(process.env.DB);
 
 const postSchema = {
   title: String,
@@ -62,17 +62,11 @@ app.post("/compose", function(req, res){
     title: req.body.postTitle,
     content: req.body.postBody
   });
-  post.save(function(err){
-    if(!err){
+  post.save()
       res.redirect("/");
-    }
   });
 
   // posts.push(post);
-
-  
-
-});
 
 app.get("/posts/:postId", function(req, res){
   const requestedPostId = req.params.postId;
@@ -103,6 +97,6 @@ app.get("/posts/:postId", function(req, res){
 
 });
 
-app.listen(3000, function() {
+app.listen(3001, function() {
   console.log("Server started on port 3000");
 });
